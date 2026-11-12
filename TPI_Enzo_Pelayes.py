@@ -1,3 +1,9 @@
+import funciones as f
+import os
+#La libreria rich permite agregar color y estilo a la consola
+from rich.console import Console
+console = Console()
+existe_archivo = os.path.exists("paises.csv")
 lista_paises :list= [{"nombre":"Argentina",
                       "superficie":5000000,
                       "poblacion":5000000,
@@ -14,55 +20,73 @@ lista_paises :list= [{"nombre":"Argentina",
                       "superficie":3500000,
                       "poblacion":2100000,
                       "continente":"America"}]
-def validar_string(text:str)->str:
-    while not text.isalpha():
-        text = input("Error, ingresar solamente letras: ").strip().capitalize()
-    return text
-
-def validar_entero(num:str)->int:
-    while not num.isdigit():
-        num = input("Error, ingresar solo numero entero positivo: ").strip()
-    return int(num)
-
-def validar_pais_existente(lista:list, buscar:str)->bool:
-    for p in lista:
-        if buscar == p["nombre"]:
-            return True
-    return False
-
-def agregar_pais(pais:str) -> dict:
-    superficie = input("Ingrese la superficie del pais: ").strip()
-    superficie = validar_entero(superficie)
-
-    poblacion = input("Ingrese la poblacion país: ").strip()
-    poblacion = validar_entero(poblacion)
-
-    continente = input("Ingrese el continente del pais: ").strip().capitalize()
-    continente = validar_string(continente)
-    return {"nombre":pais, "superficie":superficie, "poblacion":poblacion, "continente":continente}
-
-
 
 if __name__=="__main__":
     parar = False
     while not parar:
-        opcion = input("1- Agregar pais \n2- Contar paises \n3- Salir \nSeleccionar opción: ")
-        match opcion:
-            case "1":
-                nombre = input("Ingrese el nombre del país: ").strip().capitalize()
-                nombre = validar_string(nombre)
-                if validar_pais_existente(lista_paises, nombre):
-                    print("Error: País existente")
-                    continue
-                lista_paises.append(agregar_pais(nombre))
-            case "2":
-                for pais in lista_paises:
-                    print(f"""========================
-País: {pais["nombre"]}
-Superficie: {pais["superficie"]}
-Población: {pais["poblacion"]}
-Continente: {pais["continente"]}""")
-            case "3":
-                parar = True
-            case _:
-                print("Error: opción inválida")
+        opcion = f.main()#Devuelve un texto donde el primer caracter es un numero
+
+        #opcion[0] hace referencia al primer caracter de la variable
+        #ya que cada opcion de main() tiene como primer caracter un numero del 1 al 7
+        if opcion[0] == "1":
+            #[i cyan] define donde se comienza a pintar el texto y [/i cyan] define donde se terminan de pintar
+            #Todo texto que este por fuera aparece normal, a menos que se defina un color por defecto con "style="
+            nombre = console.input("[i cyan]Ingrese el nombre del país:[/i cyan] ").strip().capitalize()
+            nombre = f.validar_string(nombre)
+            try:
+                #Aca se valida que el país no exista para saber si seguir o volver al inicio indicando que el pais ya existe
+                if f.validar_pais_existente(lista_paises, nombre):
+                    #Si el país existe, devolvemos al inicio
+                    console.print("[bold red]Error: País existente[bold red]")
+            except NameError:
+                #Si la funcion lanza error, significa que el pais no existe por lo que la logica de la opcion esta bien
+                lista_paises.append(f.agregar_pais(nombre))
+                console.print("¡País agregado exitosamente", style="bold green")
+
+        elif opcion[0] == "2":
+            pais = console.input("[i cyan]Ingrese el pais:[/i cyan]: ").capitalize().strip()
+            #Aca es al reves, si la funcion validar_pais_existente lanza error, significa que no hay pais
+            #al cual actualizarle datos
+            try:
+                if f.validar_pais_existente(lista_paises, pais):
+                    f.actualizar_pais(lista_paises, pais)
+            except NameError:
+                console.print("Error: País inexistente", style= "bold red")
+            print(lista_paises)
+
+        elif opcion[0] == "3":
+            pais_buscar = console.input("[i cyan]Ingrese el pais a buscar:[/i cyan] ").strip().capitalize()
+            try:
+                pais = f.buscar_pais(lista_paises, pais_buscar)
+                console.print(f"""
+[i cyan]Nombre:[/i cyan] {pais["nombre"]}
+[i cyan]Superficie:[/i cyan] {pais["superficie"]}
+[i cyan]Poblacion:[/i cyan] {pais["poblacion"]}
+[i cyan]Continente:[/i cyan] {pais["continente"]}
+""", style= "bold magenta")
+#Todo lo que esta por dentro de los corchetes [i cyan]-[/i cyan] estaran pintados de cian, y los 
+#que esten por fuera de los corchetes, aparecen pintados ya que "style=" agrega color a todo texto
+#que este por fuera de esos corchetes
+            except NameError:
+                console.print("Error: País inexistente", style= "bold red")
+    
+        elif opcion[0] == "4":
+            opcion = f.menu_filtrar_paises()
+            if opcion == "> Continente":
+                paises = f.paises_por_continente(lista_paises)
+                #k es la clave del diccionario y v es el valor, en este caso una lista
+                for k, v in paises.items():
+                    console.print(f"{k}:", style="bold magenta")
+                    #Como "v" es una lista, la recorremos para imprimir sus valores
+                    for i in range(len(v)):
+                        console.print(f" > {v[i]}", style="i cyan")
+            elif opcion == "> Poblacion":
+                pass
+            else:
+                pass
+        elif opcion[0] == "5":
+            pass
+        elif opcion[0] == "6":
+            pass
+        elif opcion[0] == "7":
+            parar = True

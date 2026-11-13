@@ -1,12 +1,18 @@
 #La bilbioteca questionary permite realizar un menu mas interactivo y facil de leer
 from questionary import select, Style
 
+import os
+
 #rapidfuzz permite la busqueda de nombres por parcialidad
 from rapidfuzz import fuzz
 
 #rich permite poner color a la consola y la variablle console permite usar Console de forma mas sencilla
 from rich.console import Console
 console = Console()
+
+def actualizar_csv(lista:list) -> None:
+    existe_archivo = os.path.exists("paises.csv")
+    pass
 
 def main() -> str:
     #La siguiente variable define el estilo de cada elemento que querramos editar
@@ -29,6 +35,11 @@ def main() -> str:
         "7- Salir"
         ], style= estilo_menu).ask()
     return option
+
+#Esta funcion limpia la consola luego de un mensaje
+def limpiar_consola() -> None:
+    console.input("[i #6cbfa6]    Presione cualquier tecla para continuar[/i #6cbfa6]")
+    console.clear()
 
 def validar_string(text:str)->str:
     while not text.isalpha():
@@ -56,8 +67,15 @@ def agregar_pais(pais:str) -> dict:
     poblacion = console.input("[i cyan]Ingrese la poblacion país:[/i cyan] ").strip()
     poblacion = validar_entero(poblacion)
 
-    continente = console.input("[i cyan]Ingrese el continente del pais:[/i cyan] ").strip().capitalize()
-    continente = validar_string(continente)
+    estilo_menu = Style([
+        ("qmark", "fg:#421341 bold"),
+        ("question", "fg:#421341 bold"),
+        ("pointer", "fg:#3F709D"),
+        ("highlighted", "fg:#3F709D italic"),
+        ("text", "fg:#421341")])
+    continente = select("Indique el continente", choices=[
+        "África", "America","Antarida", "Asia", "Europa"
+    ], style=estilo_menu).ask()
     return {"nombre":pais, "superficie":superficie, "poblacion":poblacion, "continente":continente}
 
 def buscar_pais(lista:list, pais:str) -> dict:
@@ -95,6 +113,24 @@ def paises_por_continente (lista:list) -> dict:
             paises[pais["continente"]] = [pais["nombre"]]
         else:
             paises[pais["continente"]].append(pais["nombre"])
+    return paises
+
+#Uso la misma funcion para devolver los paises ordenados por poblacion o superficie, ya que los dos usan la misma logica
+#la variable "indicacion" define si filtra paises por poblacion o superficie
+def paises_por_pob_o_sup (lista:list, indicacion:str) -> dict:
+    paises = {"0 - 999.999": [], "1.000.000 - 9.999.999" : [], "10.000.000 - 99.999.999" : []}
+    rango1 = (0, 999999)
+    rango2 = (1000000, 9999999)
+    for pais in lista:
+        #El if es para verificar que se encuentre entre el rango correcto, e indicacion es para
+        #filtrarlos dependiendo si se toma en cuentaa la poblacion o la superficie
+        if rango1[0] < pais[indicacion] <= rango1[1]:
+            paises["0 - 999.999"].append(pais["nombre"])
+
+        elif rango2[0] <= pais[indicacion] < rango2[1]:
+            paises["1.000.000 - 9.999.999"].append(pais["nombre"])
+        else:
+            paises["10.000.000 - 99.999.999"].append(pais["nombre"])
     return paises
 
 if __name__=="__main__":

@@ -10,7 +10,7 @@ lista_paises :list= [{"nombre":"Argentina",
                       "continente":"America"},
                     {"nombre":"España",
                       "superficie":4000000,
-                      "poblacion":2300000,
+                      "poblacion":100000,
                       "continente":"Europa"},
                     {"nombre":"Rusia",
                       "superficie":56000000,
@@ -38,11 +38,12 @@ if __name__=="__main__":
                 if f.validar_pais_existente(lista_paises, nombre):
                     #Si el país existe, devolvemos al inicio
                     console.print("[bold red]Error: País existente[bold red]")
+                    f.limpiar_consola()
             except NameError:
                 #Si la funcion lanza error, significa que el pais no existe por lo que la logica de la opcion esta bien
                 lista_paises.append(f.agregar_pais(nombre))
-                console.print("¡País agregado exitosamente", style="bold green")
-
+                console.print("¡País agregado exitosamente!", style="bold green")
+                f.limpiar_consola()
         elif opcion[0] == "2":
             pais = console.input("[i cyan]Ingrese el pais:[/i cyan]: ").capitalize().strip()
             #Aca es al reves, si la funcion validar_pais_existente lanza error, significa que no hay pais
@@ -50,9 +51,10 @@ if __name__=="__main__":
             try:
                 if f.validar_pais_existente(lista_paises, pais):
                     f.actualizar_pais(lista_paises, pais)
+                    f.limpiar_consola()
             except NameError:
                 console.print("Error: País inexistente", style= "bold red")
-            print(lista_paises)
+                f.limpiar_consola()
 
         elif opcion[0] == "3":
             pais_buscar = console.input("[i cyan]Ingrese el pais a buscar:[/i cyan] ").strip().capitalize()
@@ -64,11 +66,13 @@ if __name__=="__main__":
 [i cyan]Poblacion:[/i cyan] {pais["poblacion"]}
 [i cyan]Continente:[/i cyan] {pais["continente"]}
 """, style= "bold magenta")
+                f.limpiar_consola()
 #Todo lo que esta por dentro de los corchetes [i cyan]-[/i cyan] estaran pintados de cian, y los 
 #que esten por fuera de los corchetes, aparecen pintados ya que "style=" agrega color a todo texto
 #que este por fuera de esos corchetes
             except NameError:
                 console.print("Error: País inexistente", style= "bold red")
+                f.limpiar_consola()
     
         elif opcion[0] == "4":
             opcion = f.menu_filtrar_paises()
@@ -80,10 +84,22 @@ if __name__=="__main__":
                     #Como "v" es una lista, la recorremos para imprimir sus valores
                     for i in range(len(v)):
                         console.print(f" > {v[i]}", style="i cyan")
+                f.limpiar_consola()
+
             elif opcion == "> Poblacion":
-                pass
+                paises = f.paises_por_pob_o_sup(lista_paises, "poblacion")
+                for k, v in paises.items():
+                    console.print(f"{k}:", style="bold magenta")
+                    for i in range(len(v)):
+                        console.print(f" > {v[i]}", style="i cyan")
+                f.limpiar_consola()
             else:
-                pass
+                paises = f.paises_por_pob_o_sup(lista_paises, "superficie")
+                for k, v in paises.items():
+                    console.print(f"{k}:", style="bold magenta")
+                    for i in range(len(v)):
+                        console.print(f" > {v[i]}", style="i cyan")
+                f.limpiar_consola()
         elif opcion[0] == "5":
             pass
         elif opcion[0] == "6":

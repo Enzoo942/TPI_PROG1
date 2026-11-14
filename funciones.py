@@ -1,7 +1,9 @@
 #La bilbioteca questionary permite realizar un menu mas interactivo y facil de leer
 from questionary import select, Style
 
+import csv
 import os
+existe_archivo = os.path.exists("paises.csv")
 
 #rapidfuzz permite la busqueda de nombres por parcialidad
 from rapidfuzz import fuzz
@@ -10,9 +12,22 @@ from rapidfuzz import fuzz
 from rich.console import Console
 console = Console()
 
+ARCHIVO = "paises.csv"
+CAMPOS= ["nombre", "poblacion", "superficie", "continente"]
+
 def actualizar_csv(lista:list) -> None:
-    existe_archivo = os.path.exists("paises.csv")
-    pass
+    with open(ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=CAMPOS)
+        escritor.writeheader()
+        escritor.writerows(lista)
+
+def leer_csv() -> list[dict]:
+    if not existe_archivo:
+        actualizar_csv([])
+        return []
+    with open(ARCHIVO, "r", encoding="utf-8") as reader:
+        lector = csv.DictReader(reader)
+    return list(lector)
 
 def main() -> str:
     #La siguiente variable define el estilo de cada elemento que querramos editar
@@ -61,11 +76,11 @@ def validar_pais_existente(lista:list, buscar:str)->bool:
     raise NameError
 
 def agregar_pais(pais:str) -> dict:
-    superficie = console.input("[i cyan]Ingrese la superficie del pais:[/i cyan] ").strip()
-    superficie = validar_entero(superficie)
-
     poblacion = console.input("[i cyan]Ingrese la poblacion país:[/i cyan] ").strip()
     poblacion = validar_entero(poblacion)
+
+    superficie = console.input("[i cyan]Ingrese la superficie del pais:[/i cyan] ").strip()
+    superficie = validar_entero(superficie)
 
     estilo_menu = Style([
         ("qmark", "fg:#421341 bold"),
@@ -76,7 +91,7 @@ def agregar_pais(pais:str) -> dict:
     continente = select("Indique el continente", choices=[
         "África", "America","Antarida", "Asia", "Europa"
     ], style=estilo_menu).ask()
-    return {"nombre":pais, "superficie":superficie, "poblacion":poblacion, "continente":continente}
+    return {"nombre":pais, "poblacion":poblacion, "superficie":superficie, "continente":continente}
 
 def buscar_pais(lista:list, pais:str) -> dict:
     for i in lista:
@@ -123,7 +138,7 @@ def paises_por_pob_o_sup (lista:list, indicacion:str) -> dict:
     rango2 = (1000000, 9999999)
     for pais in lista:
         #El if es para verificar que se encuentre entre el rango correcto, e indicacion es para
-        #filtrarlos dependiendo si se toma en cuentaa la poblacion o la superficie
+        #filtrarlos dependiendo si se toma en cuenta la poblacion o la superficie
         if rango1[0] < pais[indicacion] <= rango1[1]:
             paises["0 - 999.999"].append(pais["nombre"])
 

@@ -16,18 +16,21 @@ ARCHIVO = "paises.csv"
 CAMPOS= ["nombre", "poblacion", "superficie", "continente"]
 
 def actualizar_csv(lista:list) -> None:
+    #Abre el archivo ya sea existente o no y actualiza todos los datos de este
     with open(ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
         escritor = csv.DictWriter(archivo, fieldnames=CAMPOS)
         escritor.writeheader()
         escritor.writerows(lista)
 
 def leer_csv() -> list[dict]:
+    #Si el archivo no existe, crea uno solamente con los campos, ya que la lista de datos esta vacia
     if not existe_archivo:
         actualizar_csv([])
         return []
+    #Si el archivo existe, lo lee y lo devuelve como lista de diccionarios
     with open(ARCHIVO, "r", encoding="utf-8") as reader:
         lector = csv.DictReader(reader)
-    return list(lector)
+        return list(lector)
 
 def main() -> str:
     #La siguiente variable define el estilo de cada elemento que querramos editar
@@ -106,7 +109,7 @@ def actualizar_pais (lista:list, pais:str) -> None:
     pais["superficie"] = superficie_nueva
     pais["poblacion"] = poblacion_nueva
 
-def menu_filtrar_paises() -> str:
+def submenus(pregunta:str, opciones:list) -> str:
     estilo_menu = Style([
         ("qmark", "fg:#421341 bold"),
         ("question", "fg:#421341 bold"),
@@ -114,11 +117,7 @@ def menu_filtrar_paises() -> str:
         ("highlighted", "fg:#3F709D italic"),
         ("text", "fg:#421341")])
 
-    opcion = select("Desea filtrar paises por:", choices=[
-        "> Continente", 
-        "> Poblacion",
-        "> Superficie"
-    ], style= estilo_menu).ask()
+    opcion = select(pregunta, choices=opciones, style= estilo_menu).ask()
     return opcion
 
 def paises_por_continente (lista:list) -> dict:
@@ -147,6 +146,27 @@ def paises_por_pob_o_sup (lista:list, indicacion:str) -> dict:
         else:
             paises["10.000.000 - 99.999.999"].append(pais["nombre"])
     return paises
+
+def ordenar_paises (lista:list, indicacion:str= "nombre") -> dict:
+    if indicacion == "nombre":
+        paises = {}
+        for pais in lista:
+            if pais["nombre"][0] not in paises:
+                paises[pais["nombre"][0]] = [pais["nombre"]]
+            else:
+                paises[pais["nombre"][0]].append(pais["nombre"])
+        return dict(sorted(paises.items()))
+    
+    elif indicacion == "poblacion":
+        paises = {}
+        for pais in lista:
+            paises[pais["nombre"]] = pais["poblacion"]
+        return paises
+    else:
+        paises = {}
+        for pais in lista:
+            paises[pais["nombre"]] = pais["superficie"]
+        return paises
 
 if __name__=="__main__":
     print(agregar_pais("Europa"))

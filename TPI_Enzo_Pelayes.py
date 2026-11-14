@@ -14,7 +14,7 @@ if __name__=="__main__":
         #ya que cada opcion de main() tiene como primer caracter un numero del 1 al 7
         if opcion[0] == "1":
             #[i cyan] define donde se comienza a pintar el texto y [/i cyan] define donde se terminan de pintar
-            #Todo texto que este por fuera aparece normal, a menos que se defina un color por defecto con "style="
+            #todo texto que este por fuera aparece normal, a menos que se defina un color por defecto con "style="
             nombre = console.input("[i cyan]Ingrese el nombre del país:[/i cyan] ").strip().capitalize()
             nombre = f.validar_string(nombre)
             try:
@@ -55,16 +55,21 @@ if __name__=="__main__":
 [i cyan]Continente:[/i cyan] {pais["continente"]}
 """, style= "bold magenta")
                 f.limpiar_consola()
-#Todo lo que esta por dentro de los corchetes [i cyan]-[/i cyan] estaran pintados de cian, y los 
-#que esten por fuera de los corchetes, aparecen pintados ya que "style=" agrega color a todo texto
-#que este por fuera de esos corchetes
+            #todo lo que esta por dentro de los corchetes [i cyan]-[/i cyan] estaran pintados de cian, y los 
+            #que esten por fuera de los corchetes, aparecen pintados ya que "style=" agrega color a todo texto
+            #que este por fuera de esos corchetes
             except NameError:
                 console.print("Error: País inexistente", style= "bold red")
                 f.limpiar_consola()
     
         elif opcion[0] == "4":
-            opcion = f.menu_filtrar_paises()
+            opcion = f.submenus("Desea filtrar paises por:", ["> Continente", "> Poblacion", "> Superficie"])
             if opcion == "> Continente":
+                #Este if es para ver si el programa tiene al menos un pais para mostrar
+                if len(lista_paises) == 0:
+                    console.print("Ingrese al menos un país", style= "bold red")
+                    f.limpiar_consola()
+                    continue
                 paises = f.paises_por_continente(lista_paises)
                 #k es la clave del diccionario y v es el valor, en este caso una lista
                 for k, v in paises.items():
@@ -75,6 +80,10 @@ if __name__=="__main__":
                 f.limpiar_consola()
 
             elif opcion == "> Poblacion":
+                if len(lista_paises) == 0:
+                    console.print("Ingrese al menos un país", style= "bold red")
+                    f.limpiar_consola()
+                    continue
                 paises = f.paises_por_pob_o_sup(lista_paises, "poblacion")
                 for k, v in paises.items():
                     console.print(f"{k}:", style="bold magenta")
@@ -82,6 +91,10 @@ if __name__=="__main__":
                         console.print(f" > {v[i]}", style="i cyan")
                 f.limpiar_consola()
             else:
+                if len(lista_paises) == 0:
+                    console.print("Ingrese al menos un país", style= "bold red")
+                    f.limpiar_consola()
+                    continue
                 paises = f.paises_por_pob_o_sup(lista_paises, "superficie")
                 for k, v in paises.items():
                     console.print(f"{k}:", style="bold magenta")
@@ -90,7 +103,28 @@ if __name__=="__main__":
                 f.limpiar_consola()
 
         elif opcion[0] == "5":
-            pass
+            opcion_sub =f.submenus("Ordenar por:", [" Nombre", " Poblacion", " Superficie"])
+            match opcion_sub:
+                case " Nombre":
+                    opcion_sub =f.submenus("Nombre", [" A - Z", " Z - A"])
+                    if opcion_sub == " A - Z":
+                        paises = f.ordenar_paises(lista_paises)
+                        for clave, valor in paises.items():
+                            console.print(clave, style="bold magenta")
+                            for i in sorted(valor):
+                                console.print(" >", i, style="i green")
+                        f.limpiar_consola()
+                    else:
+                        paises = f.ordenar_paises(lista_paises)
+                        for clave, valor in reversed(paises.items()):
+                            console.print(clave, style="bold magenta")
+                            for i in sorted(valor):
+                                console.print(" >", i, style="i green")
+                        f.limpiar_consola()
+                case " Poblacion":
+                    pass
+                case " Superficie":
+                    pass
         elif opcion[0] == "6":
             pass
         elif opcion[0] == "7":

@@ -156,6 +156,18 @@ if __name__=="__main__":
                             console.print(f"> {valor}: \t{clave}", style="bold magenta")
                         f.limpiar_consola()
         elif opcion[0] == "6":
-            pass
+            estadisticas:dict = f.estadisticas(lista_paises)
+            pais_continente:dict = estadisticas["paises_por_continente"]
+            console.print(f"""
+[bold magenta]Pais con mayor poblacion[/bold magenta]\n {estadisticas["pais_mayor"]["nombre"]}: \t{estadisticas["pais_mayor"]["poblacion"]}
+[bold magenta]Pais con menor poblacion[/bold magenta]\n {estadisticas["pais_menor"]["nombre"]}: \t{estadisticas["pais_menor"]["poblacion"]}
+[bold magenta]Promedio de poblacion:[/bold magenta] {estadisticas["promedio_poblacion"]}
+[bold magenta]Promedio de superficie:[/bold magenta] {estadisticas["promedio_superficie"]}
+[bold magenta]Paises por continente:""", style="i cyan")
+            #A los paises por continente los separe para poder iterarlos e imprimirlos 
+            for clave, valor in pais_continente.items():
+                console.print(f" {clave}: {valor}", style="i green")
+            f.limpiar_consola()
         elif opcion[0] == "7":
+            console.print("¡Gracias por usar este sistema!:smiley:", style="b green")
             parar = True

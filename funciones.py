@@ -92,7 +92,7 @@ def agregar_pais(pais:str) -> dict:
         ("highlighted", "fg:#3F709D italic"),
         ("text", "fg:#421341")])
     continente = select("Indique el continente", choices=[
-        "África", "America","Antarida", "Asia", "Europa"
+        "África", "America","Antárida", "Asia", "Europa", "Oceania"
     ], style=estilo_menu).ask()
     return {"nombre":pais, "poblacion":poblacion, "superficie":superficie, "continente":continente}
 
@@ -127,7 +127,7 @@ def paises_por_continente (lista:list) -> dict:
             paises[pais["continente"]] = [pais["nombre"]]
         else:
             paises[pais["continente"]].append(pais["nombre"])
-    return paises
+    return dict(sorted(paises.items()))
 
 #Uso la misma funcion para devolver los paises ordenados por poblacion o superficie, ya que los dos usan la misma logica
 #la variable "indicacion" define si filtra paises por poblacion o superficie
@@ -138,10 +138,10 @@ def paises_por_pob_o_sup (lista:list, indicacion:str) -> dict:
     for pais in lista:
         #El if es para verificar que se encuentre entre el rango correcto, e indicacion es para
         #filtrarlos dependiendo si se toma en cuenta la poblacion o la superficie
-        if rango1[0] < pais[indicacion] <= rango1[1]:
+        if rango1[0] < int(pais[indicacion]) <= rango1[1]:
             paises["0 - 999.999"].append(pais["nombre"])
 
-        elif rango2[0] <= pais[indicacion] < rango2[1]:
+        elif rango2[0] <= int(pais[indicacion]) < rango2[1]:
             paises["1.000.000 - 9.999.999"].append(pais["nombre"])
         else:
             paises["10.000.000 - 99.999.999"].append(pais["nombre"])
@@ -166,6 +166,35 @@ def ordenar_paises (lista:list, indicacion:str= "nombre") -> dict:
             else:
                 paises[pais["nombre"][0]].append(pais["nombre"])
         return dict(sorted(paises.items()))
+    
+def estadisticas(lista:list) -> dict:
+    pais_mayor_poblacion = {"nombre": "", "poblacion": 0}
+    pais_menor_poblacion = {"nombre": lista[0]["nombre"], "poblacion": lista[0]["poblacion"]}
+    promedio_poblacion = 0
+    promedio_superficie = 0
+    pais_por_continente = {}
+    cantidad_paises = 0
+    for pais in lista:
+        if pais_mayor_poblacion["poblacion"] < int(pais["poblacion"]):
+            pais_mayor_poblacion["poblacion"] = int(pais["poblacion"])
+            pais_mayor_poblacion["nombre"] = pais["nombre"]
+        if int(pais_menor_poblacion["poblacion"]) > int(pais["poblacion"]):
+            pais_menor_poblacion["poblacion"] = int(pais["poblacion"])
+            pais_menor_poblacion["nombre"] = pais["nombre"]
+
+        promedio_poblacion += int(pais["poblacion"])
+        promedio_superficie += int(pais["superficie"])
+        cantidad_paises += 1
+
+        if pais["continente"] not in pais_por_continente:
+            pais_por_continente[pais["continente"]] = 1
+        else:
+            pais_por_continente[pais["continente"]] += 1
+    return {"pais_mayor": pais_mayor_poblacion, 
+            "pais_menor": pais_menor_poblacion, 
+            "promedio_poblacion": promedio_poblacion/cantidad_paises,
+            "promedio_superficie": promedio_superficie/cantidad_paises,
+            "paises_por_continente": dict(sorted(pais_por_continente.items())) }
 
 if __name__=="__main__":
     print(agregar_pais("Europa"))

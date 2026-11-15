@@ -56,7 +56,7 @@ def main() -> str:
 
 #Esta funcion limpia la consola luego de un mensaje
 def limpiar_consola() -> None:
-    console.input("[i #6cbfa6]    Presione cualquier tecla para continuar[/i #6cbfa6]")
+    console.input("[i #6cbfa6]    Presione enter para continuar[/i #6cbfa6]")
     console.clear()
 
 def validar_string(text:str)->str:
@@ -148,7 +148,17 @@ def paises_por_pob_o_sup (lista:list, indicacion:str) -> dict:
     return paises
 
 def ordenar_paises (lista:list, indicacion:str= "nombre") -> dict:
-    if indicacion == "nombre":
+    if indicacion == "poblacion":
+        paises = {}
+        for pais in lista:
+            paises[int(pais["poblacion"])] = pais["nombre"]
+        return dict(sorted(paises.items()))
+    elif indicacion == "superficie":
+        paises = {}
+        for pais in lista:
+            paises[int(pais["superficie"])] = pais["nombre"]
+        return dict(sorted(paises.items()))
+    else:
         paises = {}
         for pais in lista:
             if pais["nombre"][0] not in paises:
@@ -156,17 +166,6 @@ def ordenar_paises (lista:list, indicacion:str= "nombre") -> dict:
             else:
                 paises[pais["nombre"][0]].append(pais["nombre"])
         return dict(sorted(paises.items()))
-    
-    elif indicacion == "poblacion":
-        paises = {}
-        for pais in lista:
-            paises[pais["nombre"]] = pais["poblacion"]
-        return paises
-    else:
-        paises = {}
-        for pais in lista:
-            paises[pais["nombre"]] = pais["superficie"]
-        return paises
 
 if __name__=="__main__":
     print(agregar_pais("Europa"))

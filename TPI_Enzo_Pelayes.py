@@ -103,15 +103,23 @@ if __name__=="__main__":
                 f.limpiar_consola()
 
         elif opcion[0] == "5":
+            console.clear()
             opcion_sub =f.submenus("Ordenar por:", [" Nombre", " Poblacion", " Superficie"])
             match opcion_sub:
                 case " Nombre":
+                    #Aca no uso la funcion limpiar_consola ya que imprime un mensaje de continuar
+                    console.clear()
                     opcion_sub =f.submenus("Nombre", [" A - Z", " Z - A"])
+                    #con un if verifico si la lista debe mostrarse de forma alfabetica ascendente o descendente
                     if opcion_sub == " A - Z":
                         paises = f.ordenar_paises(lista_paises)
+                        #La funcion ya devuelve un diccionario de listas ordenado (solo para la opcion de Nombre), 
+                        #por lo que la clave es la letra (A - Z)
+                        #Y el valor es una lista con los paises que comienzan con la letra correspondiente
                         for clave, valor in paises.items():
                             console.print(clave, style="bold magenta")
                             for i in sorted(valor):
+                                #La lista no esta ordenada, por lo que se ordena en el mismo for
                                 console.print(" >", i, style="i green")
                         f.limpiar_consola()
                     else:
@@ -122,9 +130,31 @@ if __name__=="__main__":
                                 console.print(" >", i, style="i green")
                         f.limpiar_consola()
                 case " Poblacion":
-                    pass
+                    console.clear()
+                    opcion_sub =f.submenus("Poblacion", [" Ascendente", " Descendente"])
+                    if opcion_sub == " Ascendente":
+                        paises = f.ordenar_paises(lista_paises, "poblacion")
+                        for clave, valor in paises.items():
+                            console.print(f"> {valor}: \t{clave}", style="bold magenta")
+                        f.limpiar_consola()
+                    else:
+                        paises = f.ordenar_paises(lista_paises, "poblacion")
+                        for clave, valor in reversed(paises.items()):
+                            console.print(f"> {valor}: \t{clave}", style="bold magenta")
+                        f.limpiar_consola()
                 case " Superficie":
-                    pass
+                    console.clear()
+                    opcion_sub =f.submenus("Superficie", [" Ascendente", " Descendente"])
+                    if opcion_sub == " Ascendente":
+                        paises = f.ordenar_paises(lista_paises, "superficie")
+                        for clave, valor in paises.items():
+                            console.print(f"> {valor}: \t{clave}", style="bold magenta")
+                        f.limpiar_consola()
+                    else:
+                        paises = f.ordenar_paises(lista_paises, "poblacion")
+                        for clave, valor in reversed(paises.items()):
+                            console.print(f"> {valor}: \t{clave}", style="bold magenta")
+                        f.limpiar_consola()
         elif opcion[0] == "6":
             pass
         elif opcion[0] == "7":

@@ -50,7 +50,8 @@ def main() -> str:
         "4- Filtrar paises",
         "5- Ordenar paises",
         "6- Ver estadisticas",
-        "7- Salir"
+        "7- Eliminar país",
+        "8, Salir"
         ], style= estilo_menu).ask()
     return option
 
@@ -97,15 +98,22 @@ def agregar_pais(pais:str) -> dict:
     return {"nombre":pais, "poblacion":poblacion, "superficie":superficie, "continente":continente}
 
 def buscar_pais(lista:list, pais:str) -> dict:
+    paises_similares = []
     for i in lista:
         if fuzz.partial_ratio(i["nombre"], pais) >= 75:
-            return i
-    raise NameError
+            paises_similares.append(i)
+    if len(paises_similares) == 0:
+        raise NameError
+    return paises_similares
 
 def actualizar_pais (lista:list, pais:str) -> None:
     pais = buscar_pais(lista, pais)
-    superficie_nueva = validar_entero(console.input("[i cyan]Ingrese la nueva superficie del pais:[i cyan] "))
+    if len(pais) >= 2:
+        buscar = submenus("Se encontraron paises similares", [n["nombre"]for n in pais])
+        pais = buscar_pais(lista, buscar)
+    pais = pais[0]
     poblacion_nueva = validar_entero(console.input("[i cyan]Ingrese la nueva población del pais:[i cyan] "))
+    superficie_nueva = validar_entero(console.input("[i cyan]Ingrese la nueva superficie del pais:[i cyan] "))
     pais["superficie"] = superficie_nueva
     pais["poblacion"] = poblacion_nueva
 
@@ -192,8 +200,8 @@ def estadisticas(lista:list) -> dict:
             pais_por_continente[pais["continente"]] += 1
     return {"pais_mayor": pais_mayor_poblacion, 
             "pais_menor": pais_menor_poblacion, 
-            "promedio_poblacion": promedio_poblacion/cantidad_paises,
-            "promedio_superficie": promedio_superficie/cantidad_paises,
+            "promedio_poblacion": promedio_poblacion//cantidad_paises,
+            "promedio_superficie": promedio_superficie//cantidad_paises,
             "paises_por_continente": dict(sorted(pais_por_continente.items())) }
 
 if __name__=="__main__":

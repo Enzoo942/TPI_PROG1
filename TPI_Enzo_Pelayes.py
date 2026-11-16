@@ -31,7 +31,7 @@ if __name__=="__main__":
                 f.limpiar_consola() 
 
         elif opcion[0] == "2":
-            pais = console.input("[i cyan]Ingrese el pais:[/i cyan]: ").capitalize().strip()
+            pais = console.input("[i cyan]Ingrese el pais:[/i cyan] ").capitalize().strip()
             #Aca es al reves, si la funcion validar_pais_existente lanza error, significa que no hay pais
             #al cual actualizarle datos
             try:
@@ -48,6 +48,10 @@ if __name__=="__main__":
             pais_buscar = console.input("[i cyan]Ingrese el pais a buscar:[/i cyan] ").strip().capitalize()
             try:
                 pais = f.buscar_pais(lista_paises, pais_buscar)
+                if len(pais) >= 2:
+                    pais_buscar = f.submenus("Se encontraron paises similares", [n["nombre"]for n in pais])
+                    pais = f.buscar_pais(lista_paises, pais_buscar)
+                pais = pais[0]
                 console.print(f"""
 [i cyan]Nombre:[/i cyan] {pais["nombre"]}
 [i cyan]Poblacion:[/i cyan] {pais["poblacion"]}

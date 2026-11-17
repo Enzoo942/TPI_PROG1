@@ -37,12 +37,13 @@ if __name__=="__main__":
             try:
                 if f.validar_pais_existente(lista_paises, pais):
                     f.actualizar_pais(lista_paises, pais)
-                    f.limpiar_consola()
             except NameError:
                 console.print("Error: País inexistente", style= "bold red")
                 f.limpiar_consola()
             else:
                 f.actualizar_csv(lista_paises)
+                console.print("¡País actualizado correctamente!", style="b green")
+                f.limpiar_consola()
 
         elif opcion[0] == "3":
             pais_buscar = console.input("[i cyan]Ingrese el pais a buscar:[/i cyan] ").strip().capitalize()
@@ -172,6 +173,13 @@ if __name__=="__main__":
             for clave, valor in pais_continente.items():
                 console.print(f" {clave}: {valor}", style="i green")
             f.limpiar_consola()
+
         elif opcion[0] == "7":
+            try:
+                f.eliminar_pais(lista_paises)
+            except NameError as n:
+                console.print("Error: País inexistente", style="bold red")
+                f.limpiar_consola()
+        elif opcion[0] == "8":
             console.print("¡Gracias por usar este sistema!:smiley:", style="b green")
             parar = True

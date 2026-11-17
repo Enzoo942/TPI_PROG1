@@ -51,7 +51,7 @@ def main() -> str:
         "5- Ordenar paises",
         "6- Ver estadisticas",
         "7- Eliminar país",
-        "8, Salir"
+        "8- Salir"
         ], style= estilo_menu).ask()
     return option
 
@@ -97,7 +97,7 @@ def agregar_pais(pais:str) -> dict:
     ], style=estilo_menu).ask()
     return {"nombre":pais, "poblacion":poblacion, "superficie":superficie, "continente":continente}
 
-def buscar_pais(lista:list, pais:str) -> dict:
+def buscar_pais(lista:list, pais:str) -> list[dict]:
     paises_similares = []
     for i in lista:
         if fuzz.partial_ratio(i["nombre"], pais) >= 75:
@@ -203,6 +203,20 @@ def estadisticas(lista:list) -> dict:
             "promedio_poblacion": promedio_poblacion//cantidad_paises,
             "promedio_superficie": promedio_superficie//cantidad_paises,
             "paises_por_continente": dict(sorted(pais_por_continente.items())) }
+
+def eliminar_pais (lista:list):
+    pais = console.input("[i green]¿Qué país desea eliminar?:[/i green] ").strip().capitalize()
+    pais = buscar_pais(lista, pais)
+    if len(pais) >= 2:
+        console.clear()
+        eleccion = submenus("Se encontraron paises similares", [n["nombre"] for n in pais])
+        pais = buscar_pais(lista, eleccion)
+    for i in lista:
+        if i["nombre"] == pais[0]["nombre"]:
+            lista.remove(pais[0])
+    actualizar_csv(lista)
+    console.print("¡País eliminado exitosamente!", style="b green")
+    limpiar_consola()
 
 if __name__=="__main__":
     print(agregar_pais("Europa"))

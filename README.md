@@ -10,4 +10,4 @@ Link del repositorio en Github:
 - https://github.com/Enzoo942/TPI_PROG1/tree/main
 
 Link al video demostrativo:
-- https://drive.google.com/file/d/1xRMaO-AZuzzQyo4NFFxVT1rDaLf0sjRJ/view?usp=drive_link
+- https://drive.google.com/file/d/1mJSM0_HCLGwvo-c5Zh4ZrCdx2nPeqa4R/view?usp=sharing

@@ -5,3 +5,9 @@ Este es un programa de gestion de paises que permitirá agregar, eliminar, actua
 - Ejecutar programa desde TPI_Enzo_Pelayes.py
 - Para navegar por el menu usar las flechas del teclado
 - En lo posible no agregar numeros negativos en campos solicitados y revisar nombre del pais antes de agregarlo
+
+Link del repositorio en Github:
+- https://github.com/Enzoo942/TPI_PROG1/tree/main
+
+Link al video demostrativo:
+- https://drive.google.com/file/d/1xRMaO-AZuzzQyo4NFFxVT1rDaLf0sjRJ/view?usp=drive_link
